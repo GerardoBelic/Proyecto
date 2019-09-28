@@ -21,7 +21,7 @@ public class PruebaProyecto {
         
         Random rand = new Random();
         Writer www = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("numeros.txt"), "utf-8"));
-        for (int i = 0; i < 20 - 1; ++i)
+        for (int i = 0; i < 16 - 1; ++i)
         {
             Float aa = rand.nextFloat();
             www.write(aa.toString() + ",");
