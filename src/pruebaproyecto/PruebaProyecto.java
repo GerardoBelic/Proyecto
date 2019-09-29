@@ -22,9 +22,9 @@ public class PruebaProyecto {
         
         Random rand = new Random();
         Writer www = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("numeros.txt"), "utf-8"));
-        for (int i = 0; i < 1000 - 1; ++i)
+        for (int i = 0; i < 777 - 1; ++i)
         {
-            Float aa = rand.nextFloat();
+            Float aa = rand.nextFloat() * (100);
             www.write(aa.toString() + ",");
         }
         Float aa = rand.nextFloat();
@@ -117,9 +117,9 @@ public class PruebaProyecto {
             case 2:
                 mezclaEquilibrada(((opcionOrden - 1) == 1), numeroDatos);
                 break;
-            /*case 3:
-                distribucion();
-                break;*/
+            case 3:
+                distribucion(((opcionOrden - 1) == 1), numeroDatos);
+                break;
         }
         aaa.close();
         
@@ -1365,8 +1365,195 @@ public class PruebaProyecto {
         
     }
     
-    public static void distribucion(int orden, int numeroDatos)
+    public static void distribucion(boolean orden, int numeroDatos) throws IOException
     {
+        
+        Path rutaFControl = Paths.get("F0.txt");
+        Path rutaF0 = Paths.get("F_0.txt");
+        Path rutaF1 = Paths.get("F_1.txt");
+        Path rutaF2 = Paths.get("F_2.txt");
+        Path rutaF3 = Paths.get("F_3.txt");
+        Path rutaF4 = Paths.get("F_4.txt");
+        Path rutaF5 = Paths.get("F_5.txt");
+        Path rutaF6 = Paths.get("F_6.txt");
+        Path rutaF7 = Paths.get("F_7.txt");
+        Path rutaF8 = Paths.get("F_8.txt");
+        Path rutaF9 = Paths.get("F_9.txt");
+        
+        FileWriter[] inicializarArchivos =
+        {
+            new FileWriter("F_0.txt"),
+            new FileWriter("F_1.txt"),
+            new FileWriter("F_2.txt"),
+            new FileWriter("F_3.txt"),
+            new FileWriter("F_4.txt"),
+            new FileWriter("F_5.txt"),
+            new FileWriter("F_6.txt"),
+            new FileWriter("F_7.txt"),
+            new FileWriter("F_8.txt"),
+            new FileWriter("F_9.txt")
+        };
+        
+        for (FileWriter fw : inicializarArchivos)
+            fw.close();
+        
+        Scanner recorrerFControl = new Scanner(rutaFControl);
+        recorrerFControl.useDelimiter(",");
+        String[] decimalesYEnteros;
+        
+        int maxNumeros = 0;
+        int maxDecimales = 0;
+        int maxEnteros = 0;
+        
+        do
+        {
+            Float temp = recorrerFControl.nextFloat();
+            decimalesYEnteros = temp.toString().split("\\.");
+            System.out.println("parte: " + decimalesYEnteros[0] + " parte: " + decimalesYEnteros[1]);
+            
+            if (decimalesYEnteros[0].length() > maxEnteros)
+                maxEnteros = decimalesYEnteros[0].length();
+            if (decimalesYEnteros[1].length() > maxDecimales)
+                maxDecimales = decimalesYEnteros[1].length();
+            
+        } while (recorrerFControl.hasNextFloat());
+        
+        maxNumeros = maxDecimales + maxEnteros;
+        
+        System.out.println("max decimales " + maxDecimales);
+        System.out.println("max enteros " + maxEnteros);
+        System.out.println("max numeros " + maxNumeros);
+        
+        recorrerFControl.close();
+        
+        ArrayList<Integer> numerosPorArchivo = new ArrayList<>();
+        
+        for (int i = 0; i < maxNumeros; ++i)
+        {
+            
+            Scanner leerFControl = new Scanner(rutaFControl);
+            leerFControl.useDelimiter(",|'");
+            
+            for (int j = 0; j < i; ++j)
+                leerFControl.nextLine();
+            
+            FileWriter[] escrituraDeArchivos =
+            {
+                new FileWriter("F_0.txt", true),
+                new FileWriter("F_1.txt", true),
+                new FileWriter("F_2.txt", true),
+                new FileWriter("F_3.txt", true),
+                new FileWriter("F_4.txt", true),
+                new FileWriter("F_5.txt", true),
+                new FileWriter("F_6.txt", true),
+                new FileWriter("F_7.txt", true),
+                new FileWriter("F_8.txt", true),
+                new FileWriter("F_9.txt", true)
+            };
+            
+            numerosPorArchivo.clear();
+            
+            for (int j = 0; j < 10; ++j)
+                numerosPorArchivo.add(0);
+            
+            for (int j = 0; j < numeroDatos; ++j)
+            {
+                Float lectura = leerFControl.nextFloat();
+                //System.out.println(lectura);
+                decimalesYEnteros = lectura.toString().split("\\.");
+                String str = decimalesYEnteros[0] + decimalesYEnteros[1];
+                
+                //System.out.println(str);
+                
+                if (decimalesYEnteros[0].length() < maxEnteros)
+                    for (int k = decimalesYEnteros[0].length(); k < maxEnteros; ++k)
+                        str = "0" + str;
+                if (decimalesYEnteros[1].length() < maxDecimales)
+                    for (int k = decimalesYEnteros[1].length(); k < maxDecimales; ++k)
+                        str = str + "0";
+                
+                System.out.println(str);
+                
+                numerosPorArchivo.set(str.charAt(maxNumeros - 1 - i) - '0', numerosPorArchivo.get(str.charAt(maxNumeros - 1 - i) - '0') + 1);
+                
+                escrituraDeArchivos[str.charAt(maxNumeros - 1 - i) - '0'].write(lectura.toString() + ",");
+                
+                /*if (j != (numeroDatos - 1))
+                    escrituraDeArchivos[str.charAt(maxNumeros - 1 - i) - '0'].write(",");*/
+            }
+            
+            leerFControl.close();
+            
+            for (FileWriter f : escrituraDeArchivos)
+            {
+                f.write(System.getProperty("line.separator"));
+                f.close();
+            }
+            
+            Scanner[] lecturaDeArchivos =
+            {
+                new Scanner(rutaF0),
+                new Scanner(rutaF1),
+                new Scanner(rutaF2),
+                new Scanner(rutaF3),
+                new Scanner(rutaF4),
+                new Scanner(rutaF5),
+                new Scanner(rutaF6),
+                new Scanner(rutaF7),
+                new Scanner(rutaF8),
+                new Scanner(rutaF9),
+            };
+            
+            for (int j = 0; j < i; ++j)
+            {
+                for (Scanner s : lecturaDeArchivos)
+                {
+                    s.nextLine();
+                }
+            }
+            
+            for (Scanner s : lecturaDeArchivos)
+                s.useDelimiter(",");
+            
+            System.out.println("Numeros por archivo :");
+            System.out.print("[ ");
+            for (Integer j : numerosPorArchivo)
+                System.out.print(j + " ");
+            System.out.println("]");
+            
+            FileWriter escribirFControl = new FileWriter("F0.txt", true);
+            escribirFControl.write(System.getProperty("line.separator"));
+            
+            for (int j = 0; j < 10; ++j)
+            {
+                
+                //System.out.println(numerosPorArchivo.get(j));
+                for (int k = 0; k < numerosPorArchivo.get(j); ++k)
+                {
+                    
+                    if (k != (numerosPorArchivo.get(j) - 1))
+                    {
+                        Float temp = lecturaDeArchivos[j].nextFloat();
+                        escribirFControl.write(temp.toString() + ",");
+                    }
+                    else
+                    {
+                        Float temp = lecturaDeArchivos[j].nextFloat();
+                        escribirFControl.write(temp.toString() + "'");
+                    }
+                    
+                }
+
+            }
+            
+            escribirFControl.close();
+            
+            for (Scanner s : lecturaDeArchivos)
+            {
+                s.close();
+            }
+            
+        }
         
     }
     
